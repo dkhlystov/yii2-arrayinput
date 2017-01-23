@@ -1,5 +1,8 @@
 $(function() {
 
+	// https://github.com/yiisoft/yii2/issues/13352
+	$('.array-input > table > tbody > tr > td > div.empty').closest('tr').remove();
+
 	$(document).on('click', '.array-input > button', itemAddClick);
 	$(document).on('click', '.array-input .item-remove', itemRemoveClick);
 
