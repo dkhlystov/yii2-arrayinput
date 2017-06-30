@@ -70,9 +70,6 @@ class ArrayInput extends InputWidget
 	{
 		parent::init();
 
-		if ($this->itemClass === null)
-			throw new InvalidConfigException('Property "itemClass" must be set.');
-
 		if ($this->columns === null)
 			throw new InvalidConfigException('Property "columns" must be set.');
 
@@ -93,10 +90,12 @@ class ArrayInput extends InputWidget
 		]);
 
 		$hidden = Html::activeHiddenInput($this->model, $this->attribute, ['value' => '']);
-		$button = Html::button($this->addLabel, $this->addButtonOptions);
+		$layout = $hidden . "{items}";
+		if ($this->itemClass !== null)
+			$layout .= Html::button($this->addLabel, $this->addButtonOptions);
 
 		$grid = GridView::begin([
-			'layout' => $hidden . "{items}" . $button,
+			'layout' => $layout,
 			'tableOptions' => $this->tableOptions,
 			'dataProvider' => $dataProvider,
 			'showHeader' => false,
@@ -106,8 +105,10 @@ class ArrayInput extends InputWidget
 		$options = $this->options;
 		Html::addCssClass($options, 'array-input');
 
-		$class = $this->itemClass;
-		$options['data-array-input-template'] = $grid->renderTableRow(new $class, 0, 0);
+		if ($this->itemClass !== null) {
+			$class = $this->itemClass;
+			$options['data-array-input-template'] = $grid->renderTableRow(new $class, 0, 0);
+		}
 
 		$grid->options = $options;
 
@@ -162,26 +163,28 @@ class ArrayInput extends InputWidget
 			$columns[] = $column;
 		}
 
-		$columns[] = [
-			'class' => 'yii\grid\ActionColumn',
-			'options' => ['style' => 'width: 25px;'],
-			'template' => '{remove}',
-			'buttons' => [
-				'remove' => function($url, $model, $key) use ($readOnlyAttribute) {
-					$readOnly = false;
-					if ($readOnlyAttribute !== null)
-						$readOnly = $model->$readOnlyAttribute;
+		if ($this->itemClass !== null) {
+			$columns[] = [
+				'class' => 'yii\grid\ActionColumn',
+				'options' => ['style' => 'width: 25px;'],
+				'template' => '{remove}',
+				'buttons' => [
+					'remove' => function($url, $model, $key) use ($readOnlyAttribute) {
+						$readOnly = false;
+						if ($readOnlyAttribute !== null)
+							$readOnly = $model->$readOnlyAttribute;
 
-					if ($readOnly)
-						return '';
+						if ($readOnly)
+							return '';
 
-					return Html::a('<span class="glyphicon glyphicon-remove"></span>', '#', [
-						'class' => 'item-remove',
-						'title' => $this->removeLabel,
-					]);
-				},
-			],
-		];
+						return Html::a('<span class="glyphicon glyphicon-remove"></span>', '#', [
+							'class' => 'item-remove',
+							'title' => $this->removeLabel,
+						]);
+					},
+				],
+			];
+		}
 
 		$this->_columns = $columns;
 	}
