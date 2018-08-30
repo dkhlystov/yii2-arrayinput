@@ -164,12 +164,13 @@ class ArrayInput extends InputWidget
             }
 
             if (empty($column['class'])) {
-                $column = array_merge([
-                    'class' => isset($column['items']) ? 'dkhlystov\grid\DropdownInputColumn' : 'dkhlystov\grid\TextInputColumn',
-                    'basename' => $basename,
-                    'readOnlyAttribute' => $readOnlyAttribute,
-                ], $column);
+                $column['class'] = isset($column['items']) ? 'dkhlystov\grid\DropdownInputColumn' : 'dkhlystov\grid\TextInputColumn';
             }
+
+            $column = array_merge([
+                'basename' => $basename,
+                'readOnlyAttribute' => $readOnlyAttribute,
+            ], $column);
 
             $columns[] = $column;
         }
