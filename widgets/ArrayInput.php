@@ -107,6 +107,7 @@ class ArrayInput extends InputWidget
             'tableOptions' => $this->tableOptions,
             'dataProvider' => $dataProvider,
             'showHeader' => false,
+            'emptyText' => false,
             'columns' => $this->_columns,
         ]);
 
