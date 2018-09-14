@@ -55,6 +55,16 @@ class ArrayInput extends InputWidget
     public $readOnlyAttribute;
 
     /**
+     * @var boolean allow adding items
+     */
+    public $canAdd = true;
+
+    /**
+     * @var boolean allow removing items
+     */
+    public $canRemove = true;
+
+    /**
      * @var boolean moving support (sorting)
      */
     public $movingEnabled = false;
@@ -97,7 +107,7 @@ class ArrayInput extends InputWidget
         ]);
 
         $hidden = Html::activeHiddenInput($this->model, $this->attribute, ['value' => '']);
-        $button = Html::button($this->addLabel, $this->addButtonOptions);
+        $button = $this->canAdd ? Html::button($this->addLabel, $this->addButtonOptions) : '';
 
         $grid = GridView::begin([
             'layout' => $hidden . "{items}" . $button,
@@ -178,28 +188,30 @@ class ArrayInput extends InputWidget
             $columns[] = $column;
         }
 
-        $columns[] = [
-            'class' => 'yii\grid\ActionColumn',
-            'options' => ['style' => 'width: 25px;'],
-            'template' => '{remove}',
-            'buttons' => [
-                'remove' => function($url, $model, $key) use ($readOnlyAttribute) {
-                    $readOnly = false;
-                    if ($readOnlyAttribute !== null) {
-                        $readOnly = ArrayHelper::getValue($model, $readOnlyAttribute);
-                    }
+        if ($this->canRemove) {
+            $columns[] = [
+                'class' => 'yii\grid\ActionColumn',
+                'options' => ['style' => 'width: 25px;'],
+                'template' => '{remove}',
+                'buttons' => [
+                    'remove' => function($url, $model, $key) use ($readOnlyAttribute) {
+                        $readOnly = false;
+                        if ($readOnlyAttribute !== null) {
+                            $readOnly = ArrayHelper::getValue($model, $readOnlyAttribute);
+                        }
 
-                    if ($readOnly) {
-                        return '';
-                    }
+                        if ($readOnly) {
+                            return '';
+                        }
 
-                    return Html::a('<span class="glyphicon glyphicon-remove"></span>', '#', [
-                        'class' => 'item-remove',
-                        'title' => $this->removeLabel,
-                    ]);
-                },
-            ],
-        ];
+                        return Html::a('<span class="glyphicon glyphicon-remove"></span>', '#', [
+                            'class' => 'item-remove',
+                            'title' => $this->removeLabel,
+                        ]);
+                    },
+                ],
+            ];
+        }
 
         $this->_columns = $columns;
     }
