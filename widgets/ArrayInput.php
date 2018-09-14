@@ -5,9 +5,10 @@ namespace dkhlystov\widgets;
 use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 use yii\widgets\InputWidget;
-
 use dkhlystov\widgets\assets\ArrayInputAsset;
 
 /**
@@ -75,10 +76,6 @@ class ArrayInput extends InputWidget
     {
         parent::init();
 
-        if ($this->itemClass === null) {
-            throw new InvalidConfigException('Property "itemClass" must be set.');
-        }
-
         if ($this->columns === null) {
             throw new InvalidConfigException('Property "columns" must be set.');
         }
@@ -115,7 +112,8 @@ class ArrayInput extends InputWidget
         Html::addCssClass($options, 'array-input');
 
         $class = $this->itemClass;
-        $options['data-array-input-template'] = $grid->renderTableRow(new $class, 0, 0);
+        $model = $class === null ? [] : new $class;
+        $options['data-array-input-template'] = $grid->renderTableRow($model, 0, 0);
 
         $grid->options = $options;
 
@@ -168,6 +166,10 @@ class ArrayInput extends InputWidget
                 $column['class'] = isset($column['items']) ? 'dkhlystov\grid\DropdownInputColumn' : 'dkhlystov\grid\TextInputColumn';
             }
 
+            if ($this->itemClass === null && empty($column['label'])) {
+                $column['label'] = Inflector::camel2words($column['attribute'], true);
+            }
+
             $column = array_merge([
                 'basename' => $basename,
                 'readOnlyAttribute' => $readOnlyAttribute,
@@ -184,7 +186,7 @@ class ArrayInput extends InputWidget
                 'remove' => function($url, $model, $key) use ($readOnlyAttribute) {
                     $readOnly = false;
                     if ($readOnlyAttribute !== null) {
-                        $readOnly = $model->$readOnlyAttribute;
+                        $readOnly = ArrayHelper::getValue($model, $readOnlyAttribute);
                     }
 
                     if ($readOnly) {
