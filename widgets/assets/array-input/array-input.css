@@ -1,5 +1,5 @@
 .array-input-table {
-	margin-bottom: 5px;
+	margin-bottom: 5px !important;
 }
 .array-input-table tr {
 	border-bottom: 1px solid #ddd;
