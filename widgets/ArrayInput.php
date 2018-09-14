@@ -67,7 +67,7 @@ class ArrayInput extends InputWidget
     /**
      * @var boolean moving support (sorting)
      */
-    public $movingEnabled = false;
+    public $canMove = false;
 
     /**
      * @var array models with empty template
@@ -164,7 +164,7 @@ class ArrayInput extends InputWidget
         $readOnlyAttribute = $this->readOnlyAttribute;
 
         $columns = [];
-        if ($this->movingEnabled) {
+        if ($this->canMove) {
             $columns[] = ['class' => 'dkhlystov\grid\MovingColumn', 'movingDisabledAttribute' => $readOnlyAttribute];
         }
         foreach ($this->columns as $column) {
