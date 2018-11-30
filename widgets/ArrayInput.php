@@ -160,7 +160,6 @@ class ArrayInput extends InputWidget
      */
     private function prepareColumns()
     {
-        $basename = Html::getInputName($this->model, $this->attribute);
         $readOnlyAttribute = $this->readOnlyAttribute;
 
         $columns = [];
@@ -181,7 +180,6 @@ class ArrayInput extends InputWidget
             }
 
             $column = array_merge([
-                'basename' => $basename,
                 'readOnlyAttribute' => $readOnlyAttribute,
             ], $column);
 

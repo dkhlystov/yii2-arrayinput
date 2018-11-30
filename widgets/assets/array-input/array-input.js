@@ -24,7 +24,7 @@ function itemMove(e)
 function itemIndex($row, idx)
 {
 	$row.find('input, textarea, select').each(function() {
-		this.name = this.name.replace(/\[\d+\]/, '[' + idx + ']');
+		this.name = this.name.replace(/\[(?:\d+)?\]/, '[' + idx + ']');
 	});
 };
 
@@ -35,7 +35,7 @@ function itemAdd($table)
 	//index
 	var idx = -1;
 	$table.find('input, textarea, select').each(function() {
-		var m = this.name.match(/.+\[(\d+)\]\[[^\]]+\]/),
+		var m = this.name.match(/.+\[(\d+)\]\[[^\]]+\]$/),
 			i = m === null ? -1 : parseInt(m[1]);
 
 		if (i > idx) {
